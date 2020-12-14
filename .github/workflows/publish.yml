@@ -17,5 +17,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          repository: andrewlucasgs/Trabalho-Individual-2020-1-frontend
+          repository: andrewlucasgs/trabalho-individual-2020-1-frontend
           tag_with_ref: true
