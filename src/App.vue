@@ -14,7 +14,7 @@
           color="blue-grey"
           :to="{ name: 'home' }"
         >
-          THE PROFILE INDEXER
+          ANOTHER PROFILE INDEXER
         </v-btn>
       </div>
       <v-spacer></v-spacer>
