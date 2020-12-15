@@ -40,3 +40,39 @@ Para esta parte do trabalho, poderá ser utilizada qualquer tecnologia ou ferram
 ### 3. Deploy contínuo (Extra)
 
 Caso cumpra todos os requisitos descritos acima, será atribuída uma pontuação extra para o aluno que configure sua pipeline de modo a publicar a aplicação automaticamente, sempre que um novo trecho de código seja integrado à branch default.
+
+
+# Solução
+
+Para melhorar a organização da estrutura do projeto e as integrações com seviços externos, o projeto foi dividido em 2 repositórios, [Backend]() e [Frontend]()
+
+## Conteinerização
+
+### Backend
+
+Para conteinerização do backend foi utilizado um dockerfile baseado no ruby:2.5.7. E para o ambiente de teste e desenvolvimento foi criado um docker-compose com o serviço da api usando o dockerfile criado anteriormente, e uma imagem do postgresql para o serviço de banco de dados.
+
+### Frontend
+Para o frontend foi criado um dockerfile baseado no node-alpine para optimização do build, aplicando a divisão do build em estágios, assim o mesmo docker pode ser usado para desenvolvimento e produção. Um docker-compose também foi criado para facilitar a execução do projeto.
+
+## Integração contínua
+
+### Backend
+Para a integração contínua do backend foi utilizado o **github actions**. O pipeline tem 4 passos:
+- Build: utilizando o proprio docker compose
+- Preparação para os testes: cria o banco e faz as migrações
+- Teste: executa os testes.
+- Analise do código: Utilizando o **sonarcloud** para realizar a analise da qualidade do código
+Esse pipeline é executado ao realizar um push em qualquer branch do projeto e quando um pr para a master é aberto.
+
+### Frontend
+Para a integração contínua do frontend foi utilizado o **github actions**. O pipeline os seguintes passos:
+- Build: o projeto é buildados usando o yarn
+- Lint: verifica da folha de estilo
+- Unit test: executa os testes unitários
+- Analise de qualidade: Utilizando o **sonarcloud** para realizar a analise da qualidade do código.
+
+## Deploy contínuo
+Sempre que uma alteração entra na branch master uma nova imagem do docker é criada e é feito o push para o **DockerHub**. Ambos dockerfiles foram criados pensando também para a produção. A imagem do frontend já realiza o build e usa o nginx para servir os arquivos estáticos.
+
+Um **docker-compose** foi criado para o ambiente de produção, que utiliza o **watchtower** para atualizar o ambiente de produção quando uma nova versão está disponível no Dockerhub.
