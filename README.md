@@ -53,7 +53,7 @@ Para melhorar a organização da estrutura do projeto e as integrações com sev
 Para conteinerização do backend foi utilizado um dockerfile baseado no ruby:2.5.7. E para o ambiente de teste e desenvolvimento foi criado um docker-compose com o serviço da api usando o dockerfile criado anteriormente, e uma imagem do postgresql para o serviço de banco de dados.
 
 ### Frontend
-Para o frontend foi criado um dockerfile baseado no node-alpine para optimização do build, aplicando a divisão do build em estágios, assim o mesmo docker pode ser usado para desenvolvimento e produção. Um docker-compose também foi criado para facilitar a execução do projeto.
+Para o frontend foi criado um dockerfile baseado no node-alpine para optimização do build, aplicando a divisão do build em estágios, assim o mesmo docker pode ser usado para desenvolvimento e produção, usando **nginx**. Um docker-compose também foi criado para facilitar a execução do projeto.
 
 ## Integração contínua
 
@@ -74,5 +74,44 @@ Para a integração contínua do frontend foi utilizado o **github actions**. O 
 
 ## Deploy contínuo
 Sempre que uma alteração entra na branch master uma nova imagem do docker é criada e é feito o push para o **DockerHub**. Ambos dockerfiles foram criados pensando também para a produção. A imagem do frontend já realiza o build e usa o nginx para servir os arquivos estáticos.
+Um **[docker-compose.production.yml](https://github.com/andrewlucasgs/Trabalho-Individual-2020-1-backend/blob/master/docker-compose.production.yml)** foi criado para o ambiente de produção, que utiliza o **watchtower** para atualizar o ambiente de produção quando uma nova versão está disponível no Dockerhub.
 
-Um **docker-compose** foi criado para o ambiente de produção, que utiliza o **watchtower** para atualizar o ambiente de produção quando uma nova versão está disponível no Dockerhub.
+Para rodar o docker, foi criado uma droplet na **DigitalOcean** acessada pelo endereço: http://142.93.188.32/ e a api http://142.93.188.32:3000/.
+
+# Como usar
+
+## Frontend
+
+Clone este repositório:
+```bash
+git clone git@github.com:andrewlucasgs/Trabalho-Individual-2020-1-frontend.git
+```
+
+Para executar o ambiente de desenvolvimento:
+```bash
+docker-compose up # Inicia a aplicação na porta 8080
+```
+
+Para executar os testes
+```bash
+docker-compose run frontend yarn test:unit
+```
+
+## Backend
+
+Clone o repositório:
+```bash
+git clone git@github.com:andrewlucasgs/Trabalho-Individual-2020-1-backend.git
+```
+
+Para executar o ambiente de desenvolvimento:
+```bash
+docker-compose run api rake db:create # Cria o banco de dados
+docker-compose run api rake db:migrate # Migra as tabelas
+docker-compose up # Inicia a aplicação na porta 3000
+```
+
+Para executar os testes
+```bash
+docker-compose run api bundle exec rails test 
+```
